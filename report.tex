@@ -1,9 +1,12 @@
 \documentclass[12pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{graphicx}
+\usepackage{tabulary}
 \usepackage{times}
 \usepackage[T1]{fontenc}
 \usepackage{textcomp}
+\usepackage{fancyvrb}
+\usepackage{parskip}
 \usepackage{titlesec}
 \usepackage{array, booktabs}
 \newcommand{\sectionbreak}{\clearpage}
@@ -14,9 +17,10 @@
 
 \begin{titlepage}
   \begin{center}
-    \vspace*{1cm}
-    \Huge{\textbf{
-        UAV Collision Avoidance\\
+    \vspace*{1cm} {
+      \Huge\textbf{
+        Cal Poly Collaborative UAV Project\\
+        \bigskip
         Final Report
     }}
 
@@ -27,8 +31,8 @@
       \includegraphics[width=0.5\textwidth]{logo.png}
     \end{figure}
 
-    \vfill
-    \large{
+    \vfill {
+      \large
       Emil Alejandria\\
       Erik Alsterlind\\
       Jacob Hladky\\
@@ -36,7 +40,8 @@
 
     \vspace{1cm}
 
-    \large{
+    {
+      \large
       Department of Computer Engineering\\
       California Polytechnic State University, San Luis Obispo\\
       \today
@@ -53,12 +58,23 @@
 \pagenumbering{arabic}
 
 \section{Introduction}
+
 \subsection{Project Overview}
-The Northrup Grumman UAV project, started three years ago, is a collaborative effort between Cal Poly, San Luis Obispo and Cal Poly, Pomona. This collaboration has resulted in several autonomous vehicles, including several planes, a ground vehicle, and, most recently, a quad-copter. Last year the focus of the project was the implementation of a basic collision avoidance algorithm for the planes. This year, the focus was on maintenance, compatibility, and documentation. Specifically, the goals of this team were to upgrade the autopilot system and to improve the existing collision avoidance algorithm.\\\\
+The Northrup Grumman UAV project, started three years ago, is a collaborative effort between Cal Poly, San Luis Obispo and Cal Poly, Pomona. This collaboration has resulted in several autonomous vehicles, including several planes, a ground vehicle, and, most recently, a quad-copter. Last year the focus of the project was the implementation of a basic collision avoidance algorithm for the planes. This year, the focus was on maintenance, compatibility, and documentation. Specifically, the goals of this team were to upgrade the autopilot system and to improve the existing collision avoidance algorithm.
+
 The result of this project was a more robust and extensible flight-controller, a more intelligent sense-and-avoid system, and a more accessible code-base.
 
+\subsection{Team Roles}
+
+\begin{itemize}
+\item \textbf{Emil Alejandria} --- Team Lead, Sense and Avoid Architect
+  \item \textbf{Erik Alsterlind} --- System Architect
+  \item \textbf{Jacob Hladky}  --- Development Tools Specialist
+\end{itemize}
+
 \subsection{Clients and Community Partners}
-Our client on this project is The Northrup-Grumman Corporation (NGC), one of the largest defense companies in the world, and one of the primary contractors for the United States Armed Forces. NGC benefits from continued collaboration with Cal Poly and Cal Poly, Pomona as the universities provide the company a ready supply of talent for potential hire after graduation as well as a possible source for innovation.\\\\
+Our client on this project is The Northrup-Grumman Corporation (NGC), one of the largest defense companies in the world, and one of the primary contractors for the United States Armed Forces. NGC benefits from continued collaboration with Cal Poly and Cal Poly, Pomona as the universities provide the company a ready supply of talent for potential hire after graduation as well as a possible source for innovation.
+
 Students benefit from NGC's involvement by exposure to the corporate requirements and practices of large, multi-disciplinary projects, and by the opportunity to work on complex hardware systems.
 
 % NOTE, THIS SHOULD BE MOVED TO SOME OTHER SECTION.
@@ -80,15 +96,14 @@ Objectives:
 \end{enumerate}
 
 \subsection{Results}
-Over the course of the year we have implemented a new sense and avoid algorithm that is far more complex and robust than its predecessor. With this algorithm, we have the ability to avoid multiple obstacles and discern an efficient path for reaching our goal safely. The system makes use of GPS information to produce way-points for the auto-pilot to follow. In order to test the algorithm, we feed it sample GPS points that are hard coded into the software to see how it reacts. Additionally, we have started the development of a Simulink simulation to try and more accurately model the entire flight system. To run our more sophisticated functionality, we upgraded to a commensurately powerful flight computer. The new hardware is significantly faster than the system it has replaced, and allows us to perform complex calculations with no loss of efficiency. Also, we implemented a communication protocol for sending and receiving GPS information. This protocol was agreed upon with our collaborative partners at Cal Poly, Pomona and provides an effective means of communication between autonomous systems. Finally, throughout this project, we have maintained a standard of stewardship to ensure accessibility for future contributors. 
+Over the course of the year we have implemented a new sense and avoid algorithm that is far more complex and robust than its predecessor. With this algorithm, we have the ability to avoid multiple obstacles and discern an efficient path for reaching our goal safely. The system makes use of GPS information to produce way-points for the auto-pilot to follow. In order to test the algorithm, we feed it sample GPS points that are hard coded into the software to see how it reacts.
 
+We have started the development of a Simulink simulation to try and more accurately model the entire flight system. To run our more sophisticated functionality, we upgraded to a commensurately powerful flight computer. The new hardware is significantly faster than the system it has replaced, and allows us to perform complex calculations with no loss of efficiency. Also, we implemented a communication protocol for sending and receiving GPS information. This protocol was agreed upon with our collaborative partners at Cal Poly, Pomona and provides an effective means of communication between autonomous systems. Finally, throughout this project, we have maintained a standard of stewardship to ensure accessibility for future contributors.
 
 \section{Background}
 At the end of the project's previous year, the team was able to successfully demonstrate a functioning sense and avoidance system. The demonstration entailed two autonomous planes, both running the sense and avoid algorithm, flying straight at each other. Once the vehicles got close enough to each other, they both sensed the collision, and altered their paths to turn right and avoid the other plane. Once far enough away from each other, both planes transitioned back to traveling toward their respective targets. While effective, this functionality is limited in its ability to handle different situations. There is little flexibility in what the system can handle, and the path traveled was far from efficient. To eliminate these limitations we have designed our algorithm using two core concepts: potential fields and path projection. By incorporating both we can handle a wide variety of flight situations and minimize the distance traveled while still reaching our goal. Additionally, the greater complexity of our implementation allows for more room to tune and test. As a result, the system can be improved over time.
 
 Similar to the sense and avoid algorithm, last year's hardware setup functioned fine, but was severely limited. The overall processing power of the two micro-controllers was adequate to perform the task at hand, but allowed for little to no expansion. Seeing as we intended to greatly expand the navigation capabilities of the system, we decided to install a superior flight controller to control functionality. A survey of the available autopilot systems resulted in choosing the 3D Robotics Pixhawk because of its POSIX compatibility and prolific processing power. The value of POSIX compliance is its proven value as an industry standard in software applications, which adds credibility and portability to our project.
-
-%The new system was intended utilize a variety of sensors to alleviate the dependence on GPS and still maintain an accurate location. The potential sensors desired include inertial measurement units, infrared sensors, optical sensors, and small-scale radars. A number of solutions exist online concerning inertial navigation systems, however many of them suffer from either being too expensive or wildly inaccurate after short durations.[1] Infrared sensors typically lack the range to be useful in our application[2], optical sensors require computing power that may be beyond the capability of our hardware[2],and radar systems tend to consume excessive amounts of power.[2] Individually any of these sensors are grossly inadequate but combining sensors has been shown to provide remarkable improvements in navigation system reliability, such as a simultaneous localization and planning (SLAM).[3][4] However, for such systems it has been posited that Kalman filters provide an inadequate solution due to the dependence on inertial sensors and that alternative solutions must be sought.[3]\\\\
 
 \section{Engineering Specifications}
 \subsection{Specifications}
@@ -107,7 +122,46 @@ If the algorithm malfunctions, it may be necessary to land the UAV to avoid a cr
 This specification determines which plane has priority over all others during a flight. With the lowest priority, a plane must worry about detection and avoidance at normal specifications. Conversely, a plane with the highest priority does not need to worry about avoidance, and instead stays on a straight path. The purpose of this specification is to create different demonstration situations for testing and validation purposes.
 
 \subsection{Requirements Table}
-Herp Derp
+
+Risk can be either Low, Medium, or High
+
+\begin{table}[h!]
+  \begin{tabulary}{\textwidth}{|C|C|C|C|C|}
+    \hline
+    \textbf{Spec No.} & \textbf{Parameter Description} & \textbf{Requirement with Units} & \textbf{Tolerance} & \textbf{Risk} \\ \hline
+    \multicolumn{5}{|l|}{\textbf{COLLISION DETECTION ALGORITHM REQUIREMENTS}} \\ \hline
+    01 & Detection Radius & 500ft & min & H \\ \hline
+    02 & Buffer Distance & 50ft & min & M \\ \hline
+    03 & Altitude & 70ft & min & L \\ \hline
+    04 & Flight Time & 20min & min & L \\ \hline
+    05 & Simulation of Collision Detection Algorithm & --- & max & L \\ \hline
+    06 & Plane Turning Radius & 20ft & min & M \\ \hline
+    07 & Time for Algorithm to Detect Collision & 1s & min & M \\ \hline
+    08 & Collision Detection Recovery Time & 5s & 1s & H \\ \hline
+    09 & Operating Temperature Range & 50-90 deg F & +/0 5 deg F & L \\ \hline
+    10 & Size of Detect Object & 1 sq. ft & max & M \\ \hline
+    11 & Time Spent in Collision Avoidance Mode & 1min & 5s & M \\ \hline
+    12 & Collision Detect Re-evaluation Interval & .1s & max & H \\ \hline
+    13 & Collision Detection in GPS-Limited Area & --- & max & M \\ \hline
+    14 & Takeoff/Landing Distance & 300ft & 50ft & L \\ \hline
+    15 & Data Logging Interval & .01s & max & M \\ \hline
+    16 & Data Communication Interval & 1s & .2s & M \\ \hline
+    17 & Collision Detection Control on All Axes & --- & max & M \\ \hline
+    18 & Distance for Communication with Partner Plane & 1000ft & 100ft & M \\ \hline
+    19 & Distance for Communication with Base Station & 500ft & 50ft & M \\ \hline
+    \multicolumn{5}{|l|}{\textbf{SIMULATION ENVIRONMENT REQUIREMENTS}} \\ \hline
+    20 & Step Time & 1us & min & M \\ \hline
+    21 & Simulation Code Language Support & C++ / C & min & M \\ \hline
+    22 & Platform Support & POSIX-Compliant & min & M \\ \hline
+    23 & I/O Support & Input and Output Files & min & M \\ \hline
+    24 & Error Facility & Report Critical Errors & min & M \\ \hline
+    \multicolumn{5}{|l|}{\textbf{CODE STEWARDSHIP REQUIREMENTS}} \\ \hline
+    24 & C Code Style & Consistent e.g. K\&R or GNU & min & L \\ \hline
+    26 & Code Documentation & Doxygen & min & M \\ \hline
+    27 & Warnings & Code Compiled with -Wall, -Wextra, -Werror & min & L \\ \hline
+    28 & Licensing & Consistent License for All Code & min & L \\ \hline
+  \end{tabulary}
+\end{table}
 
 \section{Final Design Overview}
 \subsection{The Final Design}
@@ -119,10 +173,13 @@ The centerpiece of the hardware setup we installed is the 3D Robotics Pixhawk wi
    \caption{Final System Architecture}
 \end{figure}
 
-The increased word-size of the Pixhawk along with its significantly faster clock rate provides our new system with a much more powerful brain to perform computations and manage modules. We used 3D Robotics GPS modules that came with the Pixhawk to provide GPS points for our sense and avoid algorithm, which plugged into a designated port in the module.\\\\
-The other hardware component we integrated is the Digi International Xbee S3B Pro radio module for communication between UAVs. The Xbee is connected to the Pixhawk via UART serial connection, of which the Pixhawk has three open ports for use. Hardware wise, this connection is relatively simple. The 5 Volt pin of the Pixhawk port goes through a voltage regulator which brings it down to 3.3 Volts for the Xbee power pin. The voltage divider is simply comprised of a LM3940 regulator, a 470 nF capacitor across the input, and a 33 uF capacitor across the output. The TX and RX pins of the XBEE and Pixhawk are crossed (TX of Pixhawk port to RX of Xbee and vice versa), and the ground pins are connected.\\\\
+The increased word-size of the Pixhawk along with its significantly faster clock rate provides our new system with a much more powerful brain to perform computations and manage modules. We used 3D Robotics GPS modules that came with the Pixhawk to provide GPS points for our sense and avoid algorithm, which plugged into a designated port in the module.
 
-In terms of software, the operation of the Xbees is performed through three primary functions. The first function opens and configures the UART Port of the Pixhawk through software. In our code this function is called “uart\_init()”, and can be reviewed in our software documentation which is listed in the appendix of this report. This function initializes UART settings such as baudrate and flow control. After initialization, we have a function that writes a buffer of data to the xbee, and a function that reads a specific number of bytes of data from the Xbee into a buffer. Both functions, \texttt{xbee\_send()} and \texttt{xbee\_recv()}, can be viewed in the aforementioned software documentation. The design of \texttt{xbee\_recv()} required the accommodation of the real time nature of the system we developed in. Normally, a read() system call in a POSIX environment will return a given size of data as long as it is available to be read. In the Pixhawk, only one byte of data can be read at a time. As a result, we needed to write our function to deal with this difference without losing any data. On top of the main functions we use wrapper functions to provide an additional level of functionality and customization to the software. In Figure 2 below, you can see a software flow diagram of how the uses of the Xbee are integrated into the software of the system using our functions.\\\\
+The other hardware component we integrated is the Digi International Xbee S3B Pro radio module for communication between UAVs. The Xbee is connected to the Pixhawk via UART serial connection, of which the Pixhawk has three open ports for use. Hardware wise, this connection is relatively simple. The 5 Volt pin of the Pixhawk port goes through a voltage regulator which brings it down to 3.3 Volts for the Xbee power pin. The voltage divider is simply comprised of a LM3940 regulator, a 470 nF capacitor across the input, and a 33 uF capacitor across the output. The TX and RX pins of the XBEE and Pixhawk are crossed (TX of Pixhawk port to RX of Xbee and vice versa), and the ground pins are connected.
+
+In terms of software, the operation of the Xbees is performed through three primary functions. The first function opens and configures the UART Port of the Pixhawk through software. In our code this function is called “uart\_init()”, and can be reviewed in our software documentation which is listed in the appendix of this report. This function initializes UART settings such as baudrate and flow control. After initialization, we have a function that writes a buffer of data to the xbee, and a function that reads a specific number of bytes of data from the Xbee into a buffer. Both functions, \texttt{xbee\_send()} and \texttt{xbee\_recv()}, can be viewed in the aforementioned software documentation.
+
+The design of \texttt{xbee\_recv()} required the accommodation of the real time nature of the system we developed in. Normally, a read() system call in a POSIX environment will return a given size of data as long as it is available to be read. In the Pixhawk, only one byte of data can be read at a time. As a result, we needed to write our function to deal with this difference without losing any data. On top of the main functions we use wrapper functions to provide an additional level of functionality and customization to the software. In Figure 2 below, you can see a software flow diagram of how the uses of the Xbee are integrated into the software of the system using our functions.
 
 \begin{figure}[ht!]
    \centering
@@ -130,11 +187,12 @@ In terms of software, the operation of the Xbees is performed through three prim
    \caption{The software flow architecture of our program}
 \end{figure}
 
-Part of our collaboration with the Cal Poly, Pomona team was a common system of communication between autonomous vehicles. The standard that we agreed upon resulted in two types of packets that can be sent on the network. The structure of the bodies of the packets can be seen below in Figures 3 and 4. One is a system status packet that the Pomona team uses in its Ground Station to map the functionality of planes during a demonstration. The other is a global position packet that contains GPS data that
-the planes need to communicate with each other for collision avoidance to function properly. The bodies of these packets contain different information, but both utilize the same general header structure. This header contains values that define what packet is being sent as well as a sync word and a checksum value to validate a packet upon its arrival. The names of each data field give a good idea of what they detail, but the complete documentation of the packet structure can be found in our source code.
+Part of our collaboration with the Cal Poly, Pomona team was a common system of communication between autonomous vehicles. The standard that we agreed upon resulted in two types of packets that can be sent on the network. The structure of the bodies of the packets can be seen below in Figures 3 and 4. One is a system status packet that the Pomona team uses in its Ground Station to map the functionality of planes during a demonstration.
+
+The other is a global position packet that contains GPS data that the planes need to communicate with each other for collision avoidance to function properly. The bodies of these packets contain different information, but both utilize the same general header structure. This header contains values that define what packet is being sent as well as a sync word and a checksum value to validate a packet upon its arrival. Complete documentation of the packet structure can be found in the source code.
 
 \begin{centering}
-\begin{verbatim}
+\begin{Verbatim}[fontsize=\scriptsize]
 	typedef struct {
 	   int32_t sync;
 	   uint8_t source_id;
@@ -145,21 +203,22 @@ the planes need to communicate with each other for collision avoidance to functi
 	   uint16_t message_length;
 	   int8_t checksum;
 	} header_t __attribute__((packed));
-\end{verbatim}
-Figure 3: Structure of our status packet body
+\end{Verbatim}
+Figure 3: Structure of status packet body
 
-\begin{verbatim}
+\begin{Verbatim}[fontsize=\scriptsize]
 	typedef struct {
 	   int64_t time_stamp;
 	   uint16_t vehicle_id;
 	   uint8_t vehicle_mode;
 	   uint8_t vehicle_state;
 	} status_body_t __attribute__((packed));
-\end{verbatim}
-Figure 4: Structure of our position packet body\par
+\end{Verbatim}
+Figure 4: Structure of position packet body\par
 \end{centering}
 \bigskip
-The sense and avoidance system utilizes two algorithms to determine how best to avoid any potential collisions. The algorithms each generate a pair of north and east vectors which are summed to produce a vector pointing in the optimal direction for preventing collisions. The first algorithm, called the potential field method, pushes the plane directly away from obstacles and pulls the plane toward the objective. The magnitude of the pull is constant, but the magnitude of the push varies which helps to improve pathing efficiency. The second algorithm attempts to predict and avoid future collisions. It calculates whether the plane's trajectories intersect and, if they do, the time until any collisions. It then attempts to decide whether the safest and most efficient course of action would be to proceed normally, speed up, or deviate slightly from the current flight path. The first algorithm doesn't take into consideration future situations and the second algorithm neglects more immediate hazards. By combining these two algorithms we can utilize the strengths of both as a work around to each other's weakness. 
+
+The sense and avoidance system utilizes two algorithms to determine how best to avoid any potential collisions. The algorithms each generate a pair of north and east vectors which are summed to produce a vector pointing in the optimal direction for preventing collisions. The first algorithm, called the potential field method, pushes the plane directly away from obstacles and pulls the plane toward the objective. The magnitude of the pull is constant, but the magnitude of the push varies which helps to improve pathing efficiency. The second algorithm attempts to predict and avoid future collisions. It calculates whether the plane's trajectories intersect and, if they do, the time until any collisions. It then attempts to decide whether the safest and most efficient course of action would be to proceed normally, speed up, or deviate slightly from the current flight path. The first algorithm doesn't take into consideration future situations and the second algorithm neglects more immediate hazards. By combining these two algorithms we can utilize the strengths of both as a work around to each other's weakness.
 
 \begin{figure}[ht!]
    \centering
@@ -174,7 +233,7 @@ The sense and avoidance system utilizes two algorithms to determine how best to 
 \end{figure}
 
 \subsection{Safety Concerns}
-With respect to safety, the primary concern with our system is the safety of the planes in flight, and any bystanders that might view future demonstrations. To ensure that no damage is done we have developed methods of simulating our sense and avoid algorithm before putting anything in the air. The first aspect of simulation involves hard coding sample data points into the software being run on the Pixhawk. By providing a variety of different sample GPS data, we can comprehensibly test how the algorithm responds to different situations, and tune our system as necessary. The second aspect is a Simulink simulation developed to model the entire system and see how it responds as realistically as possible. Having a simulation outside the Pixhawk environment allows us to make relatively major changes and test them without having to touch the actual functioning software. With these tools, we can make sure our system is prepared for physical testing without having to take major risks with costly hardware or anyone's wellbeing. 
+The primary concern with the system is for the safety of the planes in flight, and for any bystanders that might view future demonstrations. To ensure that no damage is done we have developed methods of simulating our sense and avoid algorithm before putting anything in the air. The first aspect of simulation involves hard coding sample data points into the software being run on the Pixhawk. By providing a variety of different sample GPS data, we can comprehensibly test how the algorithm responds to different situations, and tune our system as necessary. The second aspect is a Simulink simulation developed to model the entire system and see how it responds as realistically as possible. Having a simulation outside the Pixhawk environment allows us to make relatively major changes and test them without having to touch the actual functioning software. With these tools, we can make sure our system is prepared for physical testing without having to take major risks with costly hardware or anyone's wellbeing.
 
 \subsection{Project Cost}
 
@@ -194,7 +253,7 @@ These failures are addressed by the platform team within the UAV group.
   \item Algorithm failure
   \item Hardware failure
   \end{itemize}
-Algorithm failure means that we located an obstacle, but failed to avoid it. Hardware failure, on the other hand, would be electric failure of the Pixhawk and its peripherals.
+  Algorithm failure means that we located an obstacle, but failed to avoid it. Hardware failure, on the other hand, would be electric failure of the Pixhawk and its peripherals.
 \item XBee Failure - the communication is interrupted or invalidated somehow. Methods of failure:
   \begin{itemize}
   \item Loss of connection
@@ -205,15 +264,17 @@ These and other possible failures are all addressed in our risk management docum
 
 \subsection{DVP+R}
 The following tests were explored in our DVP+R:
-Pixhawk Resilience Test: subjecting the Pixhawk to physical stress similar to what it would endure while in flight to ensure integrity.
-Object Detection Test: place multiple objects / planes in the environment and ensure that the system identifies all of them.
-Beacon Test: Place GPS beacons in the flight area and ensure that the system avoids them.
-Waypoint Test: Have plane navigate through an environment with obstacles and ensure it arrives within 10m of waypoint.
-Connection Verification Test: Send packets via XBee in potentially restricted environments (different planes, different orientations, etc) and ensure data arrives.
-Packet Verification Test: Send packets via XBee in potentially restricted environments and ensure data validity.
-IMU Test: Move the hardware while the IMU is running to test for accuracy
+\begin{itemize}
+\item \textbf{Pixhawk Resilience Test:} subjecting the Pixhawk to physical stress similar to what it would endure while in flight to ensure integrity.
+\item \textbf{Object Detection Test:} place multiple objects / planes in the environment and ensure that the system identifies all of them.
+\item \textbf{Beacon Test:} Place GPS beacons in the flight area and ensure that the system avoids them.
+\item \textbf{Waypoint Test:} Have plane navigate through an environment with obstacles and ensure it arrives within 10m of waypoint.
+\item \textbf{Connection Verification Test:} Send packets via XBee in potentially restricted environments (different planes, different orientations, etc) and ensure data arrives.
+\item \textbf{Packet Verification Test:} Send packets via XBee in potentially restricted environments and ensure data validity.
+\item \textbf{IMU Test:} Move the hardware while the IMU is running to test for accuracy
+\end{itemize}
 
-There were a few more tests we explored, but they did not apply directly to us, rather to the platform team in regards to ensuring the platform is sound. They can be found in the DVP+R Section of the appendix.
+Other tests explored applied to the platform team but not to this team. They can be found in the DVP+R Section of the appendix.
 
 \subsection{Overall System Analysis}
 \subsubsection{Collision Avoidance Algorithm}
@@ -227,42 +288,15 @@ The simulation suite currently consists of emulating the algorithm behavior in s
 We have adhered to an established standard of documentation for everything we develop in order to to enhance accessibility for future contributors as well as anyone curious about the project.  We have also placed all our code on a github repository for easy access and management. The private repo is provided to us by the IEEE club and is called the “Cal Poly IEEE/firmware” repository.
 
 \subsubsection{Future Plans}
-While the sense and avoidance algorithm itself has proven sufficient, it's still dependent on consistent, accurate GPS data. To improve the robustness of our system, we're looking to implement a line fitting algorithm to improve trajectory prediction. This will also prevent algorithm failure in the case of communication loss as we'll be able to predict the plane's path. In order to improve both the current accuracy of calculations as well as the accuracy of any future path prediction algorithms, we're going to implement a Kalman filter on the GPS data as well.
+The sense-and-avoid algorithm is depends on consistent, accurate GPS data. A line-fitting algorithm should be implemented to improve trajectory projection. This will also prevent failure in the case of communication loss by predicting and adjusting the plane's path. A Kalman filter should be implemented on the GPS data to improve both the current accuracy of calculations and the accuracy of any future path prediction algorithms.
 
-The software simulation for the algorithm is in need of minor improvements, however emphasis will be placed on developing the simulator in Simulink. While the framework is in place to model the system and the planes,the algorithm needs to be correctly ported into Simulink in order for testing to be completely useful.
+The software simulation for the algorithm needs minor improvements, however emphasis will be placed on developing the simulator in Simulink. While the framework is in place to model the system, the algorithm needs to be correctly ported into Simulink in order for testing to be completely useful.
 
-A major task that still needs to be performed is the testing of the autopilot software. This year we were not permitted to fly so we were unable to perform this operation in any capacity. We have reviewed the autopilot documentation and have a fairly good idea of how it will function within our environment, but that understanding needs to be implemented and tested before any major demonstration can be performed. The functionality seems to operate in a similar fashion to the autopilot on last year's system, so we can use their code for reference as well.
+More thorough testing needs to be performed on the autopilot software. This year we were not permitted to fly so we were unable to perform any practical testing. We have reviewed the autopilot documentation and have a fairly good idea of how it will function within our environment, but that understanding needs to be implemented and tested before any major demonstration can be performed. The autopilot functionality of the previous year's system could be used as a reference.
 
-In terms of hardware, a minor improvement needs to be made before flight testing begins. Currently, the voltage regulator that bridges the voltage gap between the Pixhawk's UART port and the XBee radio is implemented on a breadboard. While effective, the breadboard takes up a lot of space for a rather minor circuit. In the future, a new part will be fabricated to perform the same task but take up much less room. Instead of plugging in components to a breadboard, the circuit will be wired and soldered together to conserve space on our vehicles.
+The voltage regulator for the XBee radios should be implemented on a PCB or proto-board. The current circuit is prototyped on a breadboard and may not withstand the rigors of flight.
 
-
-\section{Management Plan}
-\subsubsection{Team Mission and Team Objectives}
-%	Our team mission was to upgrade the on-board hardware and the sense & avoid algorithm while making the whole project easier for new members to approach. Our first objective was to upgrade the autopilot hardware by purchasing & integrating the pixhawk PX4 autopilot. Our second objective was to upgrade the sense & avoid algorithm, which we did by implementing the modified potential field algorithm. Our final objective was to make the project more approachable, which we did be creating thorough code documentation and better instructions for setting everything up. This objective was also helped by the pixhawk's expansive online resources.
-
-\subsubsection{Team Membership and Roles}
-Emil Alejandria                 	Team Lead, Sense and Avoid Architect
-Erik Alsterlind                   	Quality control, System architect
-Jacob Hladky                    	Development tools specialist, procurement
-
-\subsubsection{Development Schedule}
-
-<Uhh>
-
-	We spent around 6 hrs/person/week on this project. It should also be considered that while it may seem like we could have accomplished more in that time, a large amount of time went into preparing for presentations, especially the NGC design review on 3/6/15. The collision avoidance development spans a long time because while we had a working algorithm in a couple weeks, we are constantly looking for ways to upgrade and improve it.
-
-\section{References}
-\begin{enumerate}
-\item Kim, Jong-Hyuk, Salah Sukkarieh, and Stuart Wishart. ``Real-Time Navigation, Guidance, and Control of a UAV Using Low-Cost Sensors.'' Field and Service Robotics (vol. \# 24). New York: Springer-Verlag Berlin/Heidelberg, 2006. N. pag. Print.
-\item ``UAV Sensors -- Electro Optical, Infrared and SAR.'' UAV Sensors -- Electro Infrared and SAR. N.p., n.d. Web. 14 Oct. 2014.
-\item ``Passive GPS-Free Navigation for Small UAVs.'' Langelaan, J. Aerospace, 2005 IEEE Conference 5-12 March 2005,. Piscataway, NJ: IEEE, 2005. IEEE Xplore. Web. 13 Oct. 2014.
-\item Kim, Johnhyuk, and Salah Sukkarieh. ``SLAM Aided GPS/INS Navigation in GPS Denied and Unknown Environments.'' Australian National University. Proc. of The 2004 International Symposium on GNSS/GPS, Australia, Sydney. CECS, n.d. Web. 13 Oct. 2014.
-\item ``OpenPilot.org -- The Next Generation Open Source UAV Autopilot.''OpenPilotorg The Next Generation Open Source UAV Autopilot RSS. N.p., n.d. Web. 14 Oct. 2014.
-\item Lacher, Andrew R. Unmanned Aircraft Collision Avoidance: Technology and Evaluation Methods (n.d.): n. pag. Www.mitre.org. Web. 13 Oct. 2014.
-\end{enumerate}
-
-\section{Appendix}
-PDF's for the FMEA, DVP+R, Decision Matrix, Processes for Handling Risks, and Personas are all available in dropbox in the ``RMAX Helicopter Project/Cal Poly Capstone 2014'' folder. A compilation of all these documents can be found in the ``Final Report Appendix.pdf'' file.
-
+\section{Appendices}
+PDFs for the FMEA, DVP+R, Decision Matrix, Processes for Handling Risks, and Personas will be included with this report.
 
 \end{document}
